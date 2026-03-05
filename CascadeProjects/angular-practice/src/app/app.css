@@ -1,0 +1,255 @@
+
+.app-container {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  background-color: var(--color-gray-50);
+}
+
+.app-header {
+  padding: var(--spacing-6) var(--spacing-8);
+  background-color: var(--color-white);
+  border-bottom: 1px solid var(--color-gray-200);
+  box-shadow: var(--shadow-sm);
+  position: sticky;
+  top: 0;
+  z-index: var(--z-sticky);
+  backdrop-filter: blur(8px);
+  background-color: rgba(255, 255, 255, 0.95);
+}
+
+.header-content {
+  text-align: center;
+}
+
+.app-header h1 {
+  margin: 0;
+  font-size: var(--font-size-3xl);
+  font-weight: var(--font-weight-bold);
+  letter-spacing: -0.02em;
+  color: var(--color-gray-900);
+}
+
+.tagline {
+  margin: var(--spacing-1) 0 0 0;
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-gray-600);
+  letter-spacing: 0.01em;
+}
+
+.app-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-8);
+  padding: var(--spacing-8);
+  overflow-y: auto;
+  max-width: 1600px;
+  width: 100%;
+  margin: 0 auto;
+}
+
+.search-section {
+  display: flex;
+  flex-direction: column;
+  min-height: 600px;
+}
+
+.planner-section {
+  display: flex;
+  flex-direction: column;
+  min-height: 500px;
+}
+
+.tab-navigation {
+  display: flex;
+  gap: var(--spacing-2);
+  padding: var(--spacing-3);
+  background: var(--color-white);
+  border-radius: var(--radius-xl) var(--radius-xl) 0 0;
+  border-bottom: 1px solid var(--color-gray-200);
+}
+
+.tab-btn {
+  flex: 1;
+  padding: var(--spacing-3) var(--spacing-6);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-gray-600);
+  background: transparent;
+  border: none;
+  border-radius: var(--radius-lg);
+  cursor: pointer;
+  transition: all var(--transition-base);
+  position: relative;
+}
+
+.tab-btn:hover {
+  background: var(--color-gray-100);
+  color: var(--color-gray-900);
+}
+
+.tab-btn.active {
+  color: var(--color-primary);
+  background: var(--color-primary-light);
+}
+
+.tab-btn.active::after {
+  content: '';
+  position: absolute;
+  bottom: calc(-1 * var(--spacing-3));
+  left: 50%;
+  transform: translateX(-50%);
+  width: 50%;
+  height: 2px;
+  background: var(--color-primary);
+  border-radius: var(--radius-full);
+}
+
+.tab-content {
+  flex: 1;
+  overflow: hidden;
+  background: var(--color-white);
+  border-radius: 0 0 var(--radius-xl) var(--radius-xl);
+  box-shadow: var(--shadow-md);
+  position: relative;
+}
+
+.tab-content > .hidden {
+  display: none;
+  visibility: hidden;
+  position: absolute;
+  pointer-events: none;
+}
+
+@media (max-width: 1400px) {
+  .app-content {
+    max-width: 100%;
+    padding: var(--spacing-6);
+  }
+}
+
+@media (max-width: 1024px) {
+  .app-content {
+    gap: var(--spacing-5);
+    padding: var(--spacing-5);
+  }
+}
+
+@media (max-width: 768px) {
+  .app-header {
+    padding: var(--spacing-5) var(--spacing-4);
+  }
+
+  .app-header h1 {
+    font-size: var(--font-size-2xl);
+  }
+
+  .app-content {
+    gap: var(--spacing-6);
+    padding: var(--spacing-5);
+  }
+
+  .search-section {
+    min-height: 500px;
+  }
+  
+  .planner-section {
+    min-height: 400px;
+  }
+
+  .tab-navigation {
+    padding: var(--spacing-2);
+    gap: var(--spacing-1);
+  }
+
+  .tab-btn {
+    padding: var(--spacing-3) var(--spacing-4);
+    font-size: var(--font-size-sm);
+  }
+}
+
+@media (max-width: 480px) {
+  .app-header {
+    padding: var(--spacing-4);
+  }
+
+  .app-header h1 {
+    font-size: var(--font-size-xl);
+  }
+
+  .app-content {
+    padding: var(--spacing-4);
+    gap: var(--spacing-4);
+  }
+
+  .tab-navigation {
+    padding: var(--spacing-2);
+  }
+
+  .tab-btn {
+    padding: var(--spacing-2) var(--spacing-3);
+    font-size: var(--font-size-xs);
+  }
+
+  .tab-btn.active::after {
+    width: 70%;
+  }
+}
+
+/* Hide print-only content on screen */
+.print-only-content {
+  display: none;
+}
+
+@media print {
+  /* Hide recipe search section */
+  .search-section {
+    display: none !important;
+  }
+
+  /* Hide app header */
+  .app-header {
+    display: none !important;
+  }
+
+  /* Hide tab navigation */
+  .tab-navigation {
+    display: none !important;
+  }
+
+  /* Hide the regular tab content (only shows one component) */
+  .tab-content {
+    display: none !important;
+  }
+
+  /* Show print-only content (both components) */
+  .print-only-content {
+    display: block !important;
+  }
+
+  /* Make planner section full width */
+  .app-content {
+    flex-direction: column;
+    padding: 0;
+    gap: 0;
+  }
+
+  .planner-section {
+    flex: none;
+    width: 100%;
+    max-width: 100%;
+  }
+
+  /* Ensure both meal planner and shopping list are visible */
+  body {
+    font-size: 12pt;
+    line-height: 1.5;
+  }
+
+  /* Add page break between meal planner and shopping list */
+  .print-only-content > app-meal-planner {
+    page-break-after: always;
+  }
+}

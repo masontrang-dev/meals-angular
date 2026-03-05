@@ -1,0 +1,93 @@
+<div class="meal-planner">
+  <div class="planner-header">
+    <div class="week-navigation">
+      <button 
+        class="week-nav-btn"
+        (click)="previousWeek()"
+        aria-label="Previous week">
+        ← Previous
+      </button>
+      
+      <div class="week-info">
+        <span class="week-range">{{ weekRange() }}</span>
+        @if (isCurrentWeek()) {
+          <span class="current-week-badge">Current Week</span>
+        } @else {
+          <span class="current-week-badge" style="visibility: hidden;">Current Week</span>
+        }
+      </div>
+      
+      <button 
+        class="week-nav-btn"
+        (click)="nextWeek()"
+        aria-label="Next week">
+        Next →
+      </button>
+      
+      <button 
+        class="today-btn"
+        (click)="goToToday()"
+        [disabled]="isCurrentWeek()"
+        aria-label="Go to current week">
+        Today
+      </button>
+    </div>
+    
+    <div class="header-actions">
+      <span class="meal-count">{{ totalMeals() }} meals planned</span>
+      <button 
+        class="clear-button" 
+        (click)="clearWeek()"
+        [disabled]="totalMeals() === 0"
+        aria-label="Clear all meals">
+        Clear Week
+      </button>
+    </div>
+  </div>
+
+  <div class="planner-grid">
+    <div class="days-container">
+      @for (day of days; track day) {
+        <div class="day-card">
+          <div class="day-header">{{ day }}</div>
+          <div class="meals-container">
+            @for (mealType of mealTypes; track mealType) {
+              <div class="meal-section">
+                <div class="meal-label">
+                  {{ getMealTypeLabel(mealType) }}
+                </div>
+                <app-meal-slot
+                  [day]="day"
+                  [mealType]="mealType"
+                  [recipe]="getRecipeForSlot(day, mealType)"
+                  (recipeDropped)="onRecipeDropped($event)"
+                  (recipeRemoved)="onRecipeRemoved($event)"
+                  (recipeClicked)="onRecipeClicked($event)"
+                  (diningOutClicked)="onDiningOutClicked($event)"
+                  (searchClicked)="onSearchClicked($event)"
+                ></app-meal-slot>
+              </div>
+            }
+          </div>
+        </div>
+      }
+    </div>
+  </div>
+</div>
+
+@if (showDiningOutModal()) {
+  <app-dining-out-modal
+    (saved)="onDiningOutSaved($event)"
+    (cancelled)="closeDiningOutModal()"
+  />
+}
+
+@if (showSearchModal() && searchDay() && searchMealType()) {
+  <app-inline-recipe-search
+    [day]="searchDay()!"
+    [mealType]="searchMealType()!"
+    (recipeSelected)="onRecipeSelected($event)"
+    (recipeClicked)="onRecipeClicked($event)"
+    (cancelled)="closeSearchModal()"
+  />
+}

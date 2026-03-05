@@ -1,0 +1,74 @@
+<div class="app-container">
+  <header class="app-header" role="banner">
+    <div class="header-content">
+      <h1>WeekPrep</h1>
+      <p class="tagline">Your weekly meal planning, simplified</p>
+    </div>
+  </header>
+  
+  <main class="app-content" role="main">
+    <section class="planner-section" aria-label="Meal planning and shopping">
+      <div class="tab-navigation">
+        <button 
+          class="tab-btn"
+          [class.active]="activeTab() === 'planner'"
+          (click)="setActiveTab('planner')"
+          aria-label="View meal planner"
+        >
+          Meal Planner
+        </button>
+        
+        <button 
+          class="tab-btn"
+          [class.active]="activeTab() === 'shopping'"
+          (click)="setActiveTab('shopping')"
+          aria-label="View shopping list"
+        >
+          Shopping List
+        </button>
+      </div>
+
+      <div class="tab-content">
+        <app-meal-planner 
+          [class.hidden]="activeTab() !== 'planner'"
+          (recipeClicked)="onRecipeClicked($event)" />
+        <app-shopping-list [class.hidden]="activeTab() !== 'shopping'" />
+      </div>
+
+      <!-- Print-only: Show both meal planner and shopping list -->
+      <div class="print-only-content">
+        <app-meal-planner />
+        <app-shopping-list />
+      </div>
+    </section>
+    
+    @if (activeTab() === 'planner') {
+      <section class="search-section" aria-label="Recipe search">
+        <app-recipe-search />
+      </section>
+    }
+  </main>
+</div>
+
+@if (showRecipeDetail() && selectedRecipe()) {
+  <app-recipe-detail 
+    [recipe]="selectedRecipe()!"
+    [day]="selectedDay()"
+    [mealType]="selectedMealType()"
+    (close)="onCloseRecipeDetail()"
+    (recipeAdded)="onRecipeAdded($event)"
+    (diningOutUpdated)="onDiningOutUpdated($event)"
+    (diningOutDeleted)="onDiningOutDeleted($event)"
+  />
+}
+
+@if (showMealSlotPicker() && recipeToAdd()) {
+  <app-meal-slot-picker
+    [recipeTitle]="recipeToAdd()!.title"
+    (slotSelected)="onMealSlotSelected($event)"
+    (cancelled)="closeMealSlotPicker()"
+  />
+}
+
+<app-toast />
+<router-outlet />

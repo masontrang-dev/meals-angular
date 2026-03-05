@@ -1,0 +1,24 @@
+<div class="shopping-item" [class.checked]="item().checked">
+  <input 
+    type="checkbox" 
+    [checked]="item().checked"
+    (change)="onToggle()"
+    [id]="'item-' + item().id"
+    [attr.aria-label]="'Check off ' + item().name"
+  />
+  
+  <label [for]="'item-' + item().id" class="item-content">
+    <span class="item-name">{{ item().name }}</span>
+    <span class="item-amount">
+      {{ item().amount | number:'1.0-2' }} {{ item().unit }}
+    </span>
+  </label>
+  
+  <button 
+    class="remove-btn"
+    (click)="onRemove()"
+    [attr.aria-label]="'Remove ' + item().name"
+  >
+    ×
+  </button>
+</div>

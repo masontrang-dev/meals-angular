@@ -1,0 +1,110 @@
+<div 
+  class="meal-slot"
+  cdkDropList
+  [id]="'meal-slot-' + day() + '-' + mealType()"
+  [cdkDropListData]="recipe()"
+  [cdkDropListConnectedTo]="['recipe-list']"
+  (cdkDropListDropped)="onDrop($event)"
+  [class.filled]="recipe()"
+  [class.empty]="!recipe()"
+  role="region"
+  [attr.aria-label]="day() + ' ' + mealType() + ' meal slot'"
+  [attr.aria-describedby]="recipe() ? day() + '-' + mealType() + '-recipe' : day() + '-' + mealType() + '-empty'">
+  
+  @if (recipe()) {
+    @if (recipe()!.diningOut) {
+      <div class="dining-out-content" (click)="onRecipeClick()" style="cursor: pointer;">
+        <div class="dining-out-icon">
+          <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M3 2v7c0 1.1.9 2 2 2h4a2 2 0 0 0 2-2V2"></path>
+            <path d="M7 2v20"></path>
+            <path d="M21 15V2v0a5 5 0 0 0-5 5v6c0 1.1.9 2 2 2h3Zm0 0v7"></path>
+          </svg>
+        </div>
+        <h4 class="dining-out-title">{{ recipe()!.title }}</h4>
+        <span class="dining-out-badge">Dining Out</span>
+        <button 
+          class="remove-button"
+          (click)="onRemove(); $event.stopPropagation()"
+          type="button"
+          aria-label="Remove dining out from meal slot">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="18" y1="6" x2="6" y2="18"></line>
+            <line x1="6" y1="6" x2="18" y2="18"></line>
+          </svg>
+        </button>
+      </div>
+    } @else {
+      <div class="recipe-content" (click)="onRecipeClick()" style="cursor: pointer;">
+        <img 
+          [src]="recipe()!.image" 
+          [alt]="recipe()!.title"
+          class="recipe-image">
+        <div class="recipe-info">
+          <h4 class="recipe-title">{{ recipe()!.title }}</h4>
+          <div class="recipe-meta">
+            <span class="meta-item">
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="10"></circle>
+                <polyline points="12 6 12 12 16 14"></polyline>
+              </svg>
+              {{ recipe()!.readyInMinutes }} min
+            </span>
+            <span class="meta-item">
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+                <circle cx="9" cy="7" r="4"></circle>
+                <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+                <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+              </svg>
+              {{ recipe()!.servings }} servings
+            </span>
+          </div>
+        </div>
+        <button 
+          class="remove-button"
+          (click)="onRemove(); $event.stopPropagation()"
+          type="button"
+          aria-label="Remove recipe from meal slot">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="18" y1="6" x2="6" y2="18"></line>
+            <line x1="6" y1="6" x2="18" y2="18"></line>
+          </svg>
+        </button>
+      </div>
+    }
+  } @else {
+    <div class="empty-content">
+      <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="empty-icon">
+        <line x1="12" y1="5" x2="12" y2="19"></line>
+        <line x1="5" y1="12" x2="19" y2="12"></line>
+      </svg>
+      <p class="empty-text">Drop recipe here</p>
+      <div class="empty-actions">
+        <button 
+          class="search-btn"
+          (click)="onSearchClick()"
+          type="button"
+          aria-label="Search for recipe">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="11" cy="11" r="8"></circle>
+            <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+          </svg>
+          Search
+        </button>
+        <button 
+          class="dining-out-btn"
+          (click)="onDiningOutClick()"
+          type="button"
+          aria-label="Add dining out">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M3 2v7c0 1.1.9 2 2 2h4a2 2 0 0 0 2-2V2"></path>
+            <path d="M7 2v20"></path>
+            <path d="M21 15V2v0a5 5 0 0 0-5 5v6c0 1.1.9 2 2 2h3Zm0 0v7"></path>
+          </svg>
+          Dining Out
+        </button>
+      </div>
+    </div>
+  }
+</div>

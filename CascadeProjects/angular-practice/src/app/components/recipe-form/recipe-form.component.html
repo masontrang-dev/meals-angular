@@ -1,0 +1,171 @@
+<div class="recipe-form-container">
+  <h2 class="form-title">Create Custom Recipe</h2>
+  
+  <form [formGroup]="recipeForm" (ngSubmit)="onSubmit()" class="recipe-form">
+    <!-- Basic Information -->
+    <div class="form-section">
+      <h3>Basic Information</h3>
+      
+      <div class="form-group">
+        <label for="title">Recipe Title *</label>
+        <input 
+          id="title" 
+          type="text" 
+          formControlName="title"
+          placeholder="e.g., Grandma's Chocolate Chip Cookies"
+          [class.error]="recipeForm.get('title')?.invalid && recipeForm.get('title')?.touched"
+        />
+        @if (recipeForm.get('title')?.invalid && recipeForm.get('title')?.touched) {
+          <span class="error-message">Title must be at least 3 characters</span>
+        }
+      </div>
+      
+      <div class="form-group">
+        <label for="image">Image URL *</label>
+        <input 
+          id="image" 
+          type="url" 
+          formControlName="image"
+          placeholder="https://example.com/image.jpg"
+          [class.error]="recipeForm.get('image')?.invalid && recipeForm.get('image')?.touched"
+        />
+        @if (recipeForm.get('image')?.invalid && recipeForm.get('image')?.touched) {
+          <span class="error-message">Please enter a valid image URL (http:// or https://)</span>
+        }
+      </div>
+      
+      <div class="form-row">
+        <div class="form-group">
+          <label for="readyInMinutes">Prep Time (minutes) *</label>
+          <input 
+            id="readyInMinutes" 
+            type="number" 
+            formControlName="readyInMinutes"
+            min="1"
+            [class.error]="recipeForm.get('readyInMinutes')?.invalid && recipeForm.get('readyInMinutes')?.touched"
+          />
+          @if (recipeForm.get('readyInMinutes')?.invalid && recipeForm.get('readyInMinutes')?.touched) {
+            <span class="error-message">Must be at least 1 minute</span>
+          }
+        </div>
+        
+        <div class="form-group">
+          <label for="servings">Servings *</label>
+          <input 
+            id="servings" 
+            type="number" 
+            formControlName="servings"
+            min="1"
+            [class.error]="recipeForm.get('servings')?.invalid && recipeForm.get('servings')?.touched"
+          />
+          @if (recipeForm.get('servings')?.invalid && recipeForm.get('servings')?.touched) {
+            <span class="error-message">Must be at least 1 serving</span>
+          }
+        </div>
+      </div>
+      
+      <div class="form-group">
+        <label for="summary">Description</label>
+        <textarea 
+          id="summary" 
+          formControlName="summary"
+          rows="3"
+          placeholder="Brief description of your recipe..."
+        ></textarea>
+      </div>
+    </div>
+    
+    <!-- Ingredients Section -->
+    <div class="form-section">
+      <div class="section-header">
+        <h3>Ingredients</h3>
+        <button type="button" class="btn-add" (click)="addIngredient()">+ Add Ingredient</button>
+      </div>
+      
+      <div formArrayName="ingredients" class="ingredients-list">
+        @for (ingredient of ingredients.controls; track $index) {
+          <div [formGroupName]="$index" class="ingredient-item">
+            <div class="ingredient-fields">
+              <input 
+                type="text" 
+                formControlName="name"
+                placeholder="Ingredient name"
+                class="ingredient-name"
+                [class.error]="ingredient.get('name')?.invalid && ingredient.get('name')?.touched"
+              />
+              <input 
+                type="number" 
+                formControlName="amount"
+                placeholder="Amount"
+                step="0.1"
+                min="0.1"
+                class="ingredient-amount"
+                [class.error]="ingredient.get('amount')?.invalid && ingredient.get('amount')?.touched"
+              />
+              <input 
+                type="text" 
+                formControlName="unit"
+                placeholder="Unit (e.g., cup, tbsp)"
+                class="ingredient-unit"
+                [class.error]="ingredient.get('unit')?.invalid && ingredient.get('unit')?.touched"
+              />
+              <button 
+                type="button" 
+                class="btn-remove"
+                (click)="removeIngredient($index)"
+                [disabled]="ingredients.length === 1"
+              >
+                ×
+              </button>
+            </div>
+          </div>
+        }
+      </div>
+    </div>
+    
+    <!-- Instructions Section -->
+    <div class="form-section">
+      <div class="section-header">
+        <h3>Instructions</h3>
+        <button type="button" class="btn-add" (click)="addInstruction()">+ Add Step</button>
+      </div>
+      
+      <div formArrayName="instructions" class="instructions-list">
+        @for (instruction of instructions.controls; track $index) {
+          <div [formGroupName]="$index" class="instruction-item">
+            <span class="step-number">{{ $index + 1 }}</span>
+            <textarea 
+              formControlName="text"
+              rows="2"
+              placeholder="Describe this step..."
+              class="instruction-text"
+              [class.error]="instruction.get('text')?.invalid && instruction.get('text')?.touched"
+            ></textarea>
+            <button 
+              type="button" 
+              class="btn-remove"
+              (click)="removeInstruction($index)"
+              [disabled]="instructions.length === 1"
+            >
+              ×
+            </button>
+          </div>
+        }
+      </div>
+    </div>
+    
+    <!-- Form Actions -->
+    <div class="form-actions">
+      <button type="button" class="btn-cancel" (click)="onCancel()" [disabled]="saving()">
+        Cancel
+      </button>
+      <button type="submit" class="btn-submit" [disabled]="saving()">
+        @if (saving()) {
+          <span>Saving...</span>
+        } @else {
+          <span>Save Recipe</span>
+        }
+      </button>
+    </div>
+  </form>
+</div>

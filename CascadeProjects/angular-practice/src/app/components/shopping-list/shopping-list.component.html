@@ -1,0 +1,88 @@
+<div class="shopping-list-container">
+  <div class="list-header">
+    <div class="header-content">
+      <h2 class="list-title">Shopping List</h2>
+      <span class="week-indicator">{{ weekRange() }}</span>
+    </div>
+    
+    <div class="header-actions">
+      <button 
+        class="btn btn-primary"
+        (click)="generateList()"
+        [attr.aria-label]="'Generate shopping list for ' + weekRange()"
+      >
+        Generate List for {{ weekRange() }}
+      </button>
+      
+      <button 
+        class="btn btn-secondary"
+        (click)="printList()"
+        [disabled]="totalItems() === 0"
+        [attr.aria-label]="'Print shopping list'"
+      >
+        Print
+      </button>
+    </div>
+  </div>
+
+  @if (totalItems() > 0) {
+    <div class="progress-section">
+      <div class="progress-info">
+        <span>{{ checkedItems() }} / {{ totalItems() }} items</span>
+        <span>{{ progress() }}%</span>
+      </div>
+      <div class="progress-bar">
+        <div 
+          class="progress-fill" 
+          [style.width.%]="progress()"
+        ></div>
+      </div>
+    </div>
+
+    <div class="list-actions">
+      <button 
+        class="btn btn-small"
+        (click)="clearChecked()"
+        [disabled]="checkedItems() === 0"
+      >
+        Clear Checked
+      </button>
+      
+      <button 
+        class="btn btn-small btn-danger"
+        (click)="clearAll()"
+      >
+        Clear All
+      </button>
+    </div>
+
+    <div class="grouped-list">
+      @for (category of categories(); track category) {
+        <div class="category-section">
+          <h3 class="category-title">{{ category }}</h3>
+          <div class="category-items">
+            @for (item of groupedList()[category]; track item.id) {
+              <app-shopping-list-item
+                [item]="item"
+                (itemToggled)="onItemToggled($event)"
+                (itemRemoved)="onItemRemoved($event)"
+              />
+            }
+          </div>
+        </div>
+      }
+    </div>
+  } @else {
+    <div class="empty-state">
+      <div class="empty-icon">🛒</div>
+      <h3>No Shopping List Yet</h3>
+      <p>Generate a shopping list from your meal plan to get started!</p>
+      <button 
+        class="btn btn-primary"
+        (click)="generateList()"
+      >
+        Generate List
+      </button>
+    </div>
+  }
+</div>

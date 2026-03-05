@@ -1,0 +1,63 @@
+<article 
+  class="recipe-card" 
+  cdkDrag 
+  [cdkDragData]="recipe()"
+  (click)="onCardClick()" 
+  role="button" 
+  tabindex="0" 
+  (keydown.enter)="onCardClick()" 
+  (keydown.space)="onCardClick()">
+  <div class="recipe-image-container">
+    <img 
+      [src]="recipe().image" 
+      [alt]="recipe().title"
+      class="recipe-image"
+      loading="lazy"
+    />
+    @if (isCustom()) {
+      <span class="custom-badge" aria-label="Custom recipe">Custom</span>
+    }
+  </div>
+  
+  <div class="recipe-content">
+    <h3 class="recipe-title">{{ recipe().title }}</h3>
+    
+    <div class="recipe-meta">
+      <span class="badge badge-time" [attr.aria-label]="'Ready in ' + recipe().readyInMinutes + ' minutes'">
+        {{ recipe().readyInMinutes }} min
+      </span>
+      <span class="badge badge-servings" [attr.aria-label]="recipe().servings + ' servings'">
+        {{ recipe().servings }} servings
+      </span>
+    </div>
+
+    @if (isCustom()) {
+      <div class="custom-actions">
+        <button 
+          type="button"
+          class="action-btn edit-btn"
+          (click)="onEdit($event)"
+          aria-label="Edit recipe"
+        >
+          Edit
+        </button>
+        <button 
+          type="button"
+          class="action-btn delete-btn"
+          (click)="onDelete($event)"
+          aria-label="Delete recipe"
+        >
+          Delete
+        </button>
+      </div>
+    }
+  </div>
+
+  <!-- Custom drag preview -->
+  <div class="drag-preview" *cdkDragPreview>
+    <img [src]="recipe().image" [alt]="recipe().title" class="drag-preview-image" />
+    <div class="drag-preview-content">
+      <span class="drag-preview-title">{{ recipe().title }}</span>
+    </div>
+  </div>
+</article>

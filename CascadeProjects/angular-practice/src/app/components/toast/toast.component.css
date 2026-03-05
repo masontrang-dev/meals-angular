@@ -1,0 +1,126 @@
+.toast-container {
+  position: fixed;
+  top: var(--spacing-5);
+  right: var(--spacing-5);
+  z-index: var(--z-tooltip);
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-3);
+  max-width: 400px;
+  pointer-events: none;
+}
+
+.toast {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--spacing-3);
+  padding: var(--spacing-4) var(--spacing-5);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-lg);
+  background: var(--color-white);
+  border: 1px solid var(--color-gray-200);
+  pointer-events: auto;
+  animation: slideIn var(--transition-slow);
+  min-width: 300px;
+}
+
+@keyframes slideIn {
+  from {
+    transform: translateX(400px);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+.toast-content {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-3);
+  flex: 1;
+}
+
+.toast-icon {
+  width: 20px;
+  height: 20px;
+  font-weight: var(--font-weight-bold);
+  flex-shrink: 0;
+}
+
+.toast-message {
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-normal);
+  color: var(--color-gray-900);
+  font-weight: var(--font-weight-medium);
+}
+
+.toast-close {
+  background: none;
+  border: none;
+  font-size: var(--font-size-2xl);
+  line-height: 1;
+  cursor: pointer;
+  color: var(--color-gray-500);
+  padding: 0;
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--radius-sm);
+  transition: all var(--transition-fast);
+  flex-shrink: 0;
+}
+
+.toast-close:hover {
+  background: var(--color-gray-100);
+  color: var(--color-gray-900);
+}
+
+.toast-success {
+  border-left: 3px solid var(--color-success);
+}
+
+.toast-success .toast-icon {
+  color: var(--color-success);
+}
+
+.toast-error {
+  border-left: 3px solid var(--color-danger);
+}
+
+.toast-error .toast-icon {
+  color: var(--color-danger);
+}
+
+.toast-warning {
+  border-left: 3px solid var(--color-warning);
+}
+
+.toast-warning .toast-icon {
+  color: var(--color-warning);
+}
+
+.toast-info {
+  border-left: 3px solid var(--color-info);
+}
+
+.toast-info .toast-icon {
+  color: var(--color-info);
+}
+
+@media (max-width: 768px) {
+  .toast-container {
+    top: var(--spacing-3);
+    right: var(--spacing-3);
+    left: var(--spacing-3);
+    max-width: none;
+  }
+
+  .toast {
+    min-width: auto;
+  }
+}

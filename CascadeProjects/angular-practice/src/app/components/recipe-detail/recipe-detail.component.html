@@ -1,0 +1,158 @@
+<div class="recipe-detail-overlay" (click)="onClose()">
+  <div class="recipe-detail-container" (click)="$event.stopPropagation()">
+    @if (recipe().diningOut) {
+      <!-- Dining Out Edit View -->
+      <div class="dining-out-detail">
+        <div class="dining-out-header">
+          <div class="dining-out-icon-large">
+            <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M3 2v7c0 1.1.9 2 2 2h4a2 2 0 0 0 2-2V2"></path>
+              <path d="M7 2v20"></path>
+              <path d="M21 15V2v0a5 5 0 0 0-5 5v6c0 1.1.9 2 2 2h3Zm0 0v7"></path>
+            </svg>
+          </div>
+          <h2>Dining Out</h2>
+          <button class="close-button" (click)="onClose()" aria-label="Close">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="18" y1="6" x2="6" y2="18"></line>
+              <line x1="6" y1="6" x2="18" y2="18"></line>
+            </svg>
+          </button>
+        </div>
+        
+        <div class="dining-out-form">
+          <label for="restaurant-name" class="form-label">Restaurant Name</label>
+          <input
+            id="restaurant-name"
+            type="text"
+            [(ngModel)]="editedRestaurantName"
+            class="restaurant-input"
+            placeholder="e.g., Chipotle, In-N-Out"
+          />
+          
+          <div class="form-actions">
+            <button class="btn btn-danger" (click)="onDeleteDiningOut()" type="button">
+              Delete
+            </button>
+            <button class="btn btn-primary" (click)="onSaveDiningOut()" type="button">
+              Save Changes
+            </button>
+          </div>
+        </div>
+      </div>
+    } @else {
+      <!-- Regular Recipe View -->
+      <!-- Header with image -->
+      <div class="recipe-header">
+        <img [src]="recipe().image" [alt]="recipe().title" class="recipe-image">
+        <button class="close-button" (click)="onClose()" aria-label="Close recipe details">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="18" y1="6" x2="6" y2="18"></line>
+            <line x1="6" y1="6" x2="18" y2="18"></line>
+          </svg>
+        </button>
+      </div>
+
+      <!-- Content -->
+      <div class="recipe-content">
+      <!-- Title and metadata -->
+      <div class="recipe-title-section">
+        <div class="title-row">
+          <h1 class="recipe-title">{{ recipe().title }}</h1>
+          <button 
+            class="btn btn-primary add-to-plan-btn"
+            (click)="onAddToPlan()"
+            type="button"
+            aria-label="Add {{ recipe().title }} to meal plan">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="12" y1="5" x2="12" y2="19"></line>
+              <line x1="5" y1="12" x2="19" y2="12"></line>
+            </svg>
+            Add to Plan
+          </button>
+        </div>
+        <div class="recipe-metadata">
+          <span class="metadata-item">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="12" r="10"></circle>
+              <polyline points="12 6 12 12 16 14"></polyline>
+            </svg>
+            {{ recipe().readyInMinutes }} min
+          </span>
+          <span class="metadata-item">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+              <circle cx="9" cy="7" r="4"></circle>
+              <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+              <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+            </svg>
+            {{ recipe().servings }} servings
+          </span>
+        </div>
+      </div>
+
+      <!-- Summary -->
+      @if (recipe().summary) {
+        <div class="recipe-summary">
+          <p>{{ stripHtml(recipe().summary!) }}</p>
+        </div>
+      }
+
+      <!-- Nutritional Information -->
+      @if (hasNutrition()) {
+        <section class="recipe-section">
+          <h2 class="section-title">Nutritional Information</h2>
+          <div class="nutrition-grid">
+            @for (nutrient of mainNutrients(); track nutrient.name) {
+              <div class="nutrition-item">
+                <span class="nutrition-label">{{ nutrient.name }}</span>
+                <span class="nutrition-value">{{ nutrient.amount | number:'1.0-1' }}{{ nutrient.unit }}</span>
+              </div>
+            }
+          </div>
+        </section>
+      }
+
+      <!-- Ingredients -->
+      @if (hasIngredients()) {
+        <section class="recipe-section">
+          <h2 class="section-title">Ingredients</h2>
+          <ul class="ingredients-list">
+            @for (ingredient of recipe().extendedIngredients!; track ingredient.id) {
+              <li class="ingredient-item">
+                <span class="ingredient-text">{{ ingredient.original }}</span>
+              </li>
+            }
+          </ul>
+        </section>
+      }
+
+      <!-- Instructions -->
+      @if (hasInstructions()) {
+        <section class="recipe-section">
+          <h2 class="section-title">Instructions</h2>
+          @for (instruction of recipe().analyzedInstructions!; track $index) {
+            <div class="instruction-group">
+              @if (instruction.name) {
+                <h3 class="instruction-group-title">{{ instruction.name }}</h3>
+              }
+              <ol class="instructions-list">
+                @for (step of instruction.steps; track step.number) {
+                  <li class="instruction-step">
+                    <span class="step-number">{{ step.number }}</span>
+                    <span class="step-text">{{ step.step }}</span>
+                  </li>
+                }
+              </ol>
+            </div>
+          }
+        </section>
+      } @else {
+        <section class="recipe-section">
+          <p class="no-instructions">No detailed instructions available for this recipe.</p>
+        </section>
+      }
+      </div>
+    }
+  </div>
+</div>

@@ -1,0 +1,128 @@
+<section class="recipe-search">
+  <div class="search-header">
+    <div class="header-top">
+      <h2 class="search-title">Find Your Perfect Recipe</h2>
+      <button 
+        type="button" 
+        class="create-recipe-btn"
+        (click)="openRecipeForm()"
+        aria-label="Create custom recipe"
+      >
+        + Create Recipe
+      </button>
+    </div>
+    
+    <div class="search-input-container">
+      <input
+        type="search"
+        [formControl]="searchControl"
+        placeholder="Search for recipes (e.g., pasta, chicken, vegan...)"
+        class="search-input"
+        aria-label="Search for recipes"
+      />
+      <svg class="search-icon" aria-hidden="true" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+      </svg>
+    </div>
+
+    @if (usingFallback()) {
+      <div class="fallback-notice" role="status">
+        <svg class="fallback-icon" aria-hidden="true" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 19a2 2 0 01-2-2V7a2 2 0 012-2h4l2 2h4a2 2 0 012 2v1M5 19h14a2 2 0 002-2v-5a2 2 0 00-2-2H9a2 2 0 00-2 2v5a2 2 0 01-2 2z" />
+        </svg>
+        <span>Using local recipe database (24 recipes available)</span>
+      </div>
+    }
+
+    @if (error()) {
+      <div class="error-message" role="alert">
+        <svg class="error-icon" aria-hidden="true" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+        </svg>
+        <span>{{ error() }}</span>
+        <button 
+          type="button" 
+          class="error-close" 
+          (click)="clearError()"
+          aria-label="Dismiss error"
+        >
+          ✕
+        </button>
+      </div>
+    }
+  </div>
+
+  <div class="search-content">
+    @if (loading()) {
+      <app-loading-skeleton [count]="12" />
+    } @else if (showInitialState()) {
+      <app-empty-state
+        icon=""
+        title="Start Your Culinary Journey"
+        message="Search for recipes by name, ingredient, or cuisine type. Or discover something new!"
+        actionText="Try clicking the button below for random recipes"
+      />
+      <div class="random-button-container">
+        <button 
+          type="button" 
+          class="random-button"
+          (click)="loadRandomRecipes()"
+        >
+          Discover Random Recipes
+        </button>
+      </div>
+    } @else if (recipes().length === 0) {
+      <app-empty-state
+        icon=""
+        title="No Recipes Found"
+        message="Try searching with different keywords or ingredients."
+        actionText="Click below to discover random recipes"
+      />
+      <div class="random-button-container">
+        <button 
+          type="button" 
+          class="random-button"
+          (click)="loadRandomRecipes()"
+        >
+          Discover Random Recipes
+        </button>
+      </div>
+    } @else {
+      <div class="recipes-grid">
+        <div 
+          cdkDropList 
+          id="recipe-list" 
+          [cdkDropListData]="recipes()" 
+          [cdkDropListConnectedTo]="mealSlotIds"
+          class="recipe-list">
+          @for (recipe of recipes(); track recipe.id) {
+            <app-recipe-card 
+              [recipe]="recipe"
+              (cardClicked)="onRecipeClick($event)"
+              (editClicked)="onEditRecipe($event)"
+              (deleteClicked)="onDeleteRecipe($event)"
+            />
+          }
+        </div>
+      </div>
+    }
+  </div>
+
+  @if (showDetail() && selectedRecipe()) {
+    <app-recipe-detail 
+      [recipe]="selectedRecipe()!"
+      (close)="onCloseDetail()"
+    />
+  }
+
+  @if (showRecipeForm()) {
+    <div class="modal-overlay" (click)="onRecipeFormClose()">
+      <div class="modal-content" (click)="$event.stopPropagation()">
+        <app-recipe-form 
+          (recipeSaved)="onRecipeSaved($event)"
+          (cancelled)="onRecipeFormClose()"
+        />
+      </div>
+    </div>
+  }
+</section>
